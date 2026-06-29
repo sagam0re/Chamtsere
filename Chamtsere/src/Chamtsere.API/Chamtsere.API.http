@@ -1,0 +1,6 @@
+@Chamtsere.API_HostAddress = http://localhost:5221
+
+GET {{Chamtsere.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
