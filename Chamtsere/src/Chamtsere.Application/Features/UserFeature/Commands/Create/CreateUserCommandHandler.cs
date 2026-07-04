@@ -14,7 +14,7 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, strin
     {
         var (Result, UserId) = await _identityService.CreateUserAsync(command);
         if (Result.Errors.Length > 0)
-            throw new InvalidOperationException("Failed to create user.");
+            throw new InvalidOperationException($"Failed to create user. {Result.Errors[0]}");
 
         return UserId;
     }

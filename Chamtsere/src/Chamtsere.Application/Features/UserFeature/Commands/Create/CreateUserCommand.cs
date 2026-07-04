@@ -2,7 +2,7 @@
 
 namespace Chamtsere.Application.Features.UserFeature.Commands.Create;
 
-public class CreateUserCommand : IRequest<string>
+public record CreateUserCommand : IRequest<string>
 {
     public required string FirstName { get; set; }
     public required string LastName { get; set; }

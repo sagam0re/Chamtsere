@@ -1,11 +1,13 @@
 ﻿using Chamtsere.Application.Common.Models;
 using Chamtsere.Application.Features.UserFeature.Commands.Create;
+using Chamtsere.Application.Features.UserFeature.Queries.UserList;
 using Chamtsere.Domain.Entities.User;
 
 namespace Chamtsere.Application.Common.Interfaces;
 
 public interface IIdentityService
 {
+    IQueryable<UserListQueryResult>? GetAllAsync();
     Task<ApplicationUser?> FindByIdAsync(string userId);
     Task<string?> GetUserNameAsync(string userId);
     Task<ApplicationUser?> FindByUserNameAsync(string userName);
@@ -24,5 +26,5 @@ public interface IIdentityService
 
     Task<Result> CreateRoleAsync(string roleName);
     Task<Result> DeleteRoleAsync(string roleName);
-    Task<Result> AssignRoleToUserAsync(string userId, string roleName);
+    Task<Result> AssignRoleToUserAsync(string userId, IEnumerable<string> roleNames);
 }

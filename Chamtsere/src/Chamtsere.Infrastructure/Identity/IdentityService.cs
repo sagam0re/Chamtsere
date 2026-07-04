@@ -1,10 +1,12 @@
-﻿using Chamtsere.Application.Common.Interfaces;
+using Chamtsere.Application.Common.Interfaces;
 using Chamtsere.Application.Common.Models;
 using Chamtsere.Application.Features.UserFeature.Commands.Create;
+using Chamtsere.Application.Features.UserFeature.Queries.UserList;
 using Chamtsere.Domain.Entities.User;
+using Chamtsere.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Chamtsere.Infrastructure.Identity;
 
@@ -15,22 +17,41 @@ public class IdentityService : IIdentityService
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IUserClaimsPrincipalFactory<ApplicationUser> _userClaimsPrincipalFactory;
     private readonly IAuthorizationService _authorizationService;
-    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly ChamtsereDbContext _dbContext;
 
     public IdentityService(
         UserManager<ApplicationUser> userManager,
         RoleManager<IdentityRole> roleManager,
         IUserClaimsPrincipalFactory<ApplicationUser> userClaimsPrincipalFactory,
         IAuthorizationService authorizationService,
-        IHttpContextAccessor httpContextAccessor)
+        ChamtsereDbContext dbContext)
     {
         _userManager = userManager;
         _roleManager = roleManager;
         _userClaimsPrincipalFactory = userClaimsPrincipalFactory;
         _authorizationService = authorizationService;
-        _httpContextAccessor = httpContextAccessor;
+        _dbContext = dbContext;
     }
 
+    public IQueryable<UserListQueryResult>? GetAllAsync()
+    {
+        return _userManager.Users.Where(u => u != null)
+                                      .AsNoTracking()
+                                      .Select(u => new UserListQueryResult
+                                      {
+                                          Id = u.Id,
+                                          UserName = u.UserName!,
+                                          FirstName = u.FirstName,
+                                          LastName = u.LastName,
+                                          Email = u.Email!,
+                                          PhoneNumber = u.PhoneNumber!,
+                                          Roles = _dbContext.UserRoles
+                                              .Where(ur => ur.UserId == u.Id)
+                                              .Join(_dbContext.Roles, ur => ur.RoleId, r => r.Id, (ur, r) => r.Name!)
+                                              .ToList()
+                                      })
+                                      .OrderBy(u => u.UserName);
+    }
     public async Task<ApplicationUser?> FindByIdAsync(string userId)
     {
         return await _userManager.FindByIdAsync(userId);
@@ -60,6 +81,7 @@ public class IdentityService : IIdentityService
 
     public async Task<(Result Result, string UserId)> CreateUserAsync(CreateUserCommand createUser)
     {
+        using var transaction = await _dbContext.Database.BeginTransactionAsync();
         var user = new ApplicationUser
         {
             FirstName = createUser.FirstName,
@@ -69,7 +91,8 @@ public class IdentityService : IIdentityService
         };
 
         var result = await _userManager.CreateAsync(user, createUser.Password);
-
+        await _userManager.AddToRolesAsync(user, createUser.Roles.Select(r => r.ToString()));
+        await transaction.CommitAsync();
         return (result.ToApplicationResult(), user.Id);
     }
 
@@ -140,19 +163,22 @@ public class IdentityService : IIdentityService
         return result.ToApplicationResult();
     }
 
-    public async Task<Result> AssignRoleToUserAsync(string userId, string roleName)
+    public async Task<Result> AssignRoleToUserAsync(string userId, IEnumerable<string> roleNames)
     {
         var user = await _userManager.FindByIdAsync(userId);
         if (user == null)
         {
             return Result.Failure([$"User with ID '{userId}' not found."]);
         }
-        if (!await _roleManager.RoleExistsAsync(roleName))
+        foreach (var roleName in roleNames)
         {
-            return Result.Failure([$"Role '{roleName}' does not exist."]);
+            if (!await _roleManager.RoleExistsAsync(roleName))
+            {
+                return Result.Failure([$"Role '{roleName}' does not exist."]);
+            }
         }
 
-        var result = await _userManager.AddToRoleAsync(user, roleName);
+        var result = await _userManager.AddToRolesAsync(user, roleNames);
         return result.ToApplicationResult();
     }
 }
