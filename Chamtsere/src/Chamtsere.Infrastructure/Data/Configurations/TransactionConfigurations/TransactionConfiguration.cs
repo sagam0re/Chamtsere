@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Chamtsere.Infrastructure.Data.Configurations;
+namespace Chamtsere.Infrastructure.Data.Configurations.TransactionConfigurations;
 
 public class TransactionConfiguration : IEntityTypeConfiguration<Transaction>
 {

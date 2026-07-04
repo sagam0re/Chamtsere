@@ -1,5 +1,4 @@
-﻿using Chamtsere.Domain.Entities.User;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Chamtsere.Domain.Entities.Token;
 
@@ -13,5 +12,5 @@ public class Token
     public required string UserId { get; set; }
 
     // Navigation property to the associated user
-    public virtual ApplicationUser? User { get; set; }
+    //public virtual ApplicationUser? User { get; set; }
 }

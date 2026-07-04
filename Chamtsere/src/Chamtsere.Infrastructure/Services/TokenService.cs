@@ -1,4 +1,4 @@
-﻿using Chamtsere.Application.Common.Interfaces;
+﻿/*using Chamtsere.Application.Common.Interfaces;
 using Chamtsere.Application.Common.Services;
 using Chamtsere.Domain.Entities.Token;
 using Chamtsere.Domain.Entities.User;
@@ -126,3 +126,4 @@ public class TokenService : ITokenService
         return principal;
     }
 }
+*/

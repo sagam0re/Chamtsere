@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Chamtsere – Premium salon management dashboard" />
+    <title>@ViewData["Title"] – Chamtsere</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg:        #0d0f14;
+            --surface:   #161920;
+            --surface2:  #1e2230;
+            --border:    rgba(255,255,255,.07);
+            --accent:    #7c6bff;
+            --accent2:   #c084fc;
+            --text:      #e2e8f0;
+            --muted:     #64748b;
+            --danger:    #f87171;
+            --success:   #34d399;
+            --radius:    14px;
+            --nav-h:     68px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* ── NAV ── */
+        nav.topbar {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            height: var(--nav-h);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 2rem;
+            background: rgba(13,15,20,.85);
+            backdrop-filter: blur(18px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-brand {
+            display: flex; align-items: center; gap: .6rem;
+            font-size: 1.25rem; font-weight: 700; color: var(--text);
+            text-decoration: none; letter-spacing: -.3px;
+        }
+        .nav-brand-dot {
+            width: 9px; height: 9px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        .nav-actions { display: flex; align-items: center; gap: .75rem; }
+
+        .btn {
+            display: inline-flex; align-items: center; gap: .45rem;
+            padding: .5rem 1.1rem;
+            border-radius: 9px; border: none; cursor: pointer;
+            font-family: inherit; font-size: .875rem; font-weight: 500;
+            text-decoration: none; transition: all .2s ease;
+            white-space: nowrap;
+        }
+        .btn-ghost {
+            background: transparent; color: var(--muted);
+            border: 1px solid var(--border);
+        }
+        .btn-ghost:hover { background: var(--surface2); color: var(--text); border-color: rgba(255,255,255,.15); }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: #fff; box-shadow: 0 4px 20px rgba(124,107,255,.35);
+        }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 28px rgba(124,107,255,.5); }
+
+        .btn-danger {
+            background: rgba(248,113,113,.12); color: var(--danger);
+            border: 1px solid rgba(248,113,113,.25);
+        }
+        .btn-danger:hover { background: rgba(248,113,113,.22); }
+
+        .avatar {
+            width: 34px; height: 34px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            display: flex; align-items: center; justify-content: center;
+            font-size: .8rem; font-weight: 700; color: #fff;
+            overflow: hidden;
+        }
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* ── PAGE BODY ── */
+        main { padding-top: var(--nav-h); }
+
+        /* ── ICONS (SVG inline) ── */
+        svg.icon { width: 17px; height: 17px; fill: currentColor; flex-shrink: 0; }
+    </style>
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+
+<nav class="topbar">
+    <a class="nav-brand" asp-controller="Home" asp-action="Index">
+        <span class="nav-brand-dot"></span>
+        Chamtsere
+    </a>
+
+    <div class="nav-actions">
+        @if (User.Identity!.IsAuthenticated)
+        {
+            <!-- Profile button -->
+            <a id="btn-profile" class="btn btn-ghost" asp-controller="Account" asp-action="Profile">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+                @User.Identity.Name
+            </a>
+
+            <!-- Logout button -->
+            <a id="btn-logout" class="btn btn-danger" asp-controller="Account" asp-action="Logout">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5-5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+                Logout
+            </a>
+        }
+        else
+        {
+            <a id="btn-login" class="btn btn-primary" asp-controller="Account" asp-action="Login">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M11 7L9.6 8.4l2.6 2.6H2v2h10.2l-2.6 2.6L11 17l5-5-5-5zm9 12h-8v2h8c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-8v2h8v14z"/></svg>
+                Sign In
+            </a>
+        }
+    </div>
+</nav>
+
+<main>
+    @RenderBody()
+</main>
+
+</body>
+</html>

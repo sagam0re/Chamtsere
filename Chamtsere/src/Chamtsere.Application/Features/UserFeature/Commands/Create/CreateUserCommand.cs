@@ -1,6 +1,4 @@
-﻿using Chamtsere.Domain.Entities.Role;
-
-namespace Chamtsere.Application.Features.UserFeature.Commands.Create;
+﻿namespace Chamtsere.Application.Features.UserFeature.Commands.Create;
 
 public record CreateUserCommand : IRequest<string>
 {
@@ -9,5 +7,4 @@ public record CreateUserCommand : IRequest<string>
     public required string UserName { get; set; }
     public required string Password { get; set; }
     public required string Email { get; set; }
-    public required List<Role> Roles { get; set; }
 }

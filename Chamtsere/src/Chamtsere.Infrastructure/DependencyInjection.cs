@@ -1,8 +1,6 @@
 ﻿using Chamtsere.Application.Common.Interfaces;
-using Chamtsere.Application.Common.Services;
 using Chamtsere.Infrastructure.Data;
 using Chamtsere.Infrastructure.Data.Interceptors;
-using Chamtsere.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
@@ -27,6 +25,6 @@ public static class DependencyInjection
         });
 
         builder.Services.AddScoped<IChamtsereDbContext>(provider => provider.GetRequiredService<ChamtsereDbContext>());
-        builder.Services.AddScoped<ITokenService, TokenService>();
+        //builder.Services.AddScoped<ITokenService, TokenService>();
     }
 }

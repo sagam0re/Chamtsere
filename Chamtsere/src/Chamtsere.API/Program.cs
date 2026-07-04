@@ -1,11 +1,8 @@
+using Auth0.AspNetCore.Authentication;
 using Chamtsere.API;
 using Chamtsere.Application;
 using Chamtsere.Infrastructure;
-using Chamtsere.Infrastructure.Data.Seed;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,26 +11,12 @@ builder.AddApplicationServices();
 builder.AddInfrastructureServices();
 
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(opt =>
-    {
-        opt.SaveToken = true;
-        opt.RequireHttpsMetadata = false; // Set to true in production
-        opt.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"]!)),
-            ValidAudience = builder.Configuration["Jwt:Audience"],
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ClockSkew = TimeSpan.Zero,
-        };
-
-        opt.MapInboundClaims = false;
-    });
-
+builder.Services.AddAuth0WebAppAuthentication(options =>
+{
+    options.Domain = builder.Configuration["Auth0:Domain"]!;
+    options.ClientId = builder.Configuration["Auth0:ClientId"]!;
+    options.ClientSecret = builder.Configuration["Auth0:ClientSecret"];
+});
 builder.Services.AddOpenApi(options =>
 {
     options.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
@@ -60,7 +43,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-await DatabaseSeeder.SeedRolesAndAdminAsync(app.Services);
+app.MapDefaultControllerRoute();
 
 app.Run();

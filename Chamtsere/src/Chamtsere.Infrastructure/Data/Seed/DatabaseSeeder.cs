@@ -1,4 +1,4 @@
-﻿using Chamtsere.Domain.Entities.User;
+﻿/*using Chamtsere.Domain.Entities.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -55,3 +55,4 @@ public class DatabaseSeeder
         }
     }
 }
+*/

@@ -1,15 +1,13 @@
-﻿using Auth0.AspNetCore.Authentication;
-using Chamtsere.Application.Features.UserFeature.Commands.Create;
+using Auth0.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Chamtsere.API.Controllers.UserControlller;
+namespace Chamtsere.API.Controllers;
 
-public partial class UserController
+public class AccountController : Controller
 {
-    [HttpPost("login")]
     public async Task Login(string returnUrl = "/")
     {
         var authenticationProperties = new LoginAuthenticationPropertiesBuilder()
@@ -18,36 +16,21 @@ public partial class UserController
 
         await HttpContext.ChallengeAsync(Auth0Constants.AuthenticationScheme, authenticationProperties);
     }
+
     [Authorize]
     public async Task Logout()
     {
         var authenticationProperties = new LogoutAuthenticationPropertiesBuilder()
-            .WithRedirectUri(Url.Action("Index", "Home"))
+            .WithRedirectUri(Url.Action("Index", "Home")!)
             .Build();
 
         await HttpContext.SignOutAsync(Auth0Constants.AuthenticationScheme, authenticationProperties);
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
     }
 
-    /*[Authorize]
+    [Authorize]
     public IActionResult Profile()
     {
         return View();
-    }*/
-
-    /*[HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginCommand command)
-    {
-        var result = await mediator.Send(command);
-
-        return Ok(result);
-    }*/
-
-    [HttpPost("create")]
-    [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> Create([FromBody] CreateUserCommand command, CancellationToken cancellationToken)
-    {
-        var result = await mediator.Send(command, cancellationToken);
-        return Ok(result);
     }
 }

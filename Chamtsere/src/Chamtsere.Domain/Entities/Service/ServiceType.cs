@@ -1,6 +1,6 @@
-﻿namespace Chamtsere.Domain.Entities.SalonService;
+﻿namespace Chamtsere.Domain.Entities.Service;
 
-public enum SalonServiceType
+public enum ServiceType
 {
     //Hair
     HaircutAndStyling,

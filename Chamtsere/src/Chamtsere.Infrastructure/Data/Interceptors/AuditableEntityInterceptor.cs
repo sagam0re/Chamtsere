@@ -8,11 +8,11 @@ namespace Chamtsere.Infrastructure.Data.Interceptors;
 
 public class AuditableEntityInterceptor : SaveChangesInterceptor
 {
-    private readonly IApplicationUser _user;
+    private readonly ICurrentUser _user;
     private readonly TimeProvider _dateTime;
 
     public AuditableEntityInterceptor(
-        IApplicationUser user,
+        ICurrentUser user,
         TimeProvider dateTime)
     {
         _user = user;

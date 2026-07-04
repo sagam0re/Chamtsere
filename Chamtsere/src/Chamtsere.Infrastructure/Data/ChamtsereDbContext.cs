@@ -1,8 +1,11 @@
 ﻿using Chamtsere.Application.Common.Interfaces;
-using Chamtsere.Domain.Entities.Booking;
-using Chamtsere.Domain.Entities.SalonService;
+using Chamtsere.Domain.Entities.Appointment;
+using Chamtsere.Domain.Entities.Service;
+using Chamtsere.Domain.Entities.Tenant;
 using Chamtsere.Domain.Entities.Token;
 using Chamtsere.Domain.Entities.Transaction;
+using Chamtsere.Domain.Entities.User.Customer;
+using Chamtsere.Domain.Entities.User.Staff;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
@@ -10,18 +13,34 @@ namespace Chamtsere.Infrastructure.Data;
 
 public class ChamtsereDbContext : DbContext, IChamtsereDbContext
 {
-    public ChamtsereDbContext(DbContextOptions<ChamtsereDbContext> options) : base(options)
+    private readonly ICurrentUser _currentUser;
+
+    public ChamtsereDbContext(
+        DbContextOptions<ChamtsereDbContext> options,
+        ICurrentUser currentUser) : base(options)
     {
+        _currentUser = currentUser;
     }
 
-    public DbSet<Booking> Bookings { get; set; }
+    public DbSet<Tenant> Tenants { get; set; }
+    public DbSet<Service> Services { get; set; }
+    public DbSet<Staff> Staffs { get; set; }
+    public DbSet<Customer> Customers { get; set; }
+    public DbSet<Appointment> Appointments { get; set; }
     public DbSet<Transaction> Transactions { get; set; }
-    public DbSet<SalonService> SalonServices { get; set; }
     public DbSet<Token> Tokens { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
+        // Apply global query filters for multi-tenancy
+        var tenantId = Guid.TryParse(_currentUser.TenantId, out var id) ? id : Guid.Empty;
+        builder.Entity<Appointment>()
+        .HasQueryFilter(a => a.TenantId == tenantId);
+
+        builder.Entity<Staff>()
+            .HasQueryFilter(s => s.TenantId == tenantId);
     }
 }
