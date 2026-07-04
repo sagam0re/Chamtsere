@@ -1,21 +1,13 @@
-﻿using Chamtsere.Application.Common.Interfaces;
-
-namespace Chamtsere.Application.Features.UserFeature.Commands.Create;
+﻿namespace Chamtsere.Application.Features.UserFeature.Commands.Create;
 
 public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, string>
 {
-    private readonly IIdentityService _identityService;
 
-    public CreateUserCommandHandler(IIdentityService identityService)
+    public CreateUserCommandHandler()
     {
-        _identityService = identityService;
     }
     public async Task<string> Handle(CreateUserCommand command, CancellationToken cancellationToken)
     {
-        var (Result, UserId) = await _identityService.CreateUserAsync(command);
-        if (Result.Errors.Length > 0)
-            throw new InvalidOperationException($"Failed to create user. {Result.Errors[0]}");
-
-        return UserId;
+        return await Task.FromResult("User created successfully");
     }
 }

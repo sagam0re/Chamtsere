@@ -1,6 +1,6 @@
 ﻿namespace Chamtsere.Application.Common.Interfaces;
 
-public interface IApplicationUser
+public interface IUser
 {
     string Id { get; }
     string UserName { get; }

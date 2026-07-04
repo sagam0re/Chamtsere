@@ -1,11 +1,8 @@
 ﻿using Chamtsere.Application.Common.Interfaces;
 using Chamtsere.Application.Common.Services;
-using Chamtsere.Domain.Entities.User;
 using Chamtsere.Infrastructure.Data;
 using Chamtsere.Infrastructure.Data.Interceptors;
-using Chamtsere.Infrastructure.Identity;
 using Chamtsere.Infrastructure.Services;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
@@ -23,9 +20,6 @@ public static class DependencyInjection
         builder.Services.AddScoped<ISaveChangesInterceptor, SoftDeleteInterceptor>();
 
         // Register the DbContext and its interface
-        builder.Services.AddScoped<IIdentityService, IdentityService>();
-        builder.Services.AddScoped<ITokenService, TokenService>();
-
         builder.Services.AddDbContext<ChamtsereDbContext>((serviceProvider, options) =>
         {
             options.UseNpgsql(builder.Configuration.GetConnectionString("ChamtsereDbConnection"))
@@ -34,22 +28,5 @@ public static class DependencyInjection
 
         builder.Services.AddScoped<IChamtsereDbContext>(provider => provider.GetRequiredService<ChamtsereDbContext>());
         builder.Services.AddScoped<ITokenService, TokenService>();
-
-        builder.Services.AddAuthentication(options =>
-        {
-            options.DefaultScheme = IdentityConstants.ApplicationScheme;
-            options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
-        })
-            .AddIdentityCookies();
-
-        builder.Services.AddAuthorizationBuilder();
-
-        builder.Services
-            .AddIdentityCore<ApplicationUser>()
-            .AddRoles<IdentityRole>()
-            .AddEntityFrameworkStores<ChamtsereDbContext>()
-            .AddSignInManager()
-            .AddDefaultTokenProviders()
-            .AddApiEndpoints();
     }
 }

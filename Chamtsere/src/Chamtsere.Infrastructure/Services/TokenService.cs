@@ -15,16 +15,13 @@ namespace Chamtsere.Infrastructure.Services;
 public class TokenService : ITokenService
 {
     private readonly IChamtsereDbContext _context;
-    private readonly IIdentityService _identityService;
     private readonly IConfiguration _configuration;
 
     public TokenService(
         IChamtsereDbContext context,
-        IIdentityService identityService,
         IConfiguration configuration)
     {
         _context = context;
-        _identityService = identityService;
         _configuration = configuration;
     }
 

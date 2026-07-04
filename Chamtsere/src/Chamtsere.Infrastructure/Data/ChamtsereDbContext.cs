@@ -3,14 +3,12 @@ using Chamtsere.Domain.Entities.Booking;
 using Chamtsere.Domain.Entities.SalonService;
 using Chamtsere.Domain.Entities.Token;
 using Chamtsere.Domain.Entities.Transaction;
-using Chamtsere.Domain.Entities.User;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
 namespace Chamtsere.Infrastructure.Data;
 
-public class ChamtsereDbContext : IdentityDbContext<ApplicationUser>, IChamtsereDbContext
+public class ChamtsereDbContext : DbContext, IChamtsereDbContext
 {
     public ChamtsereDbContext(DbContextOptions<ChamtsereDbContext> options) : base(options)
     {

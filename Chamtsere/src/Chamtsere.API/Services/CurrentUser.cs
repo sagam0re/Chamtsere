@@ -3,7 +3,7 @@ using System.Security.Claims;
 
 namespace Chamtsere.API.Services;
 
-public class CurrentUser : IApplicationUser
+public class CurrentUser : IUser
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
 

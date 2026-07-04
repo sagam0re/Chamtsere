@@ -10,6 +10,6 @@ public static class DependencyInjection
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
 
-        builder.Services.AddScoped<IApplicationUser, CurrentUser>();
+        builder.Services.AddScoped<IUser, CurrentUser>();
     }
 }
