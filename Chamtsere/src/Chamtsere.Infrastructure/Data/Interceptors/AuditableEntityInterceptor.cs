@@ -1,5 +1,6 @@
 ﻿using Chamtsere.Application.Common.Interfaces;
 using Chamtsere.Domain.Common;
+using Chamtsere.Domain.Entities.User;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -33,7 +34,7 @@ public class AuditableEntityInterceptor : SaveChangesInterceptor
         return base.SavingChangesAsync(eventData, result, cancellationToken);
     }
 
-    private void UpdateEntities(DbContext? context)
+    private async Task UpdateEntities(DbContext? context)
     {
         if (context == null) return;
 
@@ -41,13 +42,15 @@ public class AuditableEntityInterceptor : SaveChangesInterceptor
         {
             if (entry.State is EntityState.Added or EntityState.Modified || entry.HasChangedOwnedEntities())
             {
+                var user = context.Set<User>().FirstOrDefault(u => u.ExternalAuthId == _user.ExternalAuthId);
                 var utcNow = _dateTime.GetUtcNow();
+
                 if (entry.State == EntityState.Added)
                 {
-                    entry.Entity.CreatedBy = _user.Id;
+                    entry.Entity.CreatedBy = user?.Id;
                     entry.Entity.Created = utcNow;
                 }
-                entry.Entity.LastModifiedBy = _user.Id;
+                entry.Entity.LastModifiedBy = user?.Id;
                 entry.Entity.LastModified = utcNow;
             }
         }

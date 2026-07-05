@@ -2,9 +2,10 @@
 
 public interface ICurrentUser
 {
-    string? Id { get; }
     string? UserName { get; }
     string? Email { get; }
+    string? FirstName { get; }
+    string? LastName { get; }
     List<string>? Roles { get; }
     string? ExternalAuthId { get; }
     bool IsAuthenticated { get; }

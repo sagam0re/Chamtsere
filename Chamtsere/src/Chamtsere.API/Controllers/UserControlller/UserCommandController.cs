@@ -1,14 +1,13 @@
-using Chamtsere.Application.Features.UserFeature.Commands.Create;
-using Microsoft.AspNetCore.Authorization;
+using Chamtsere.Application.Features.UserFeature.Commands.Login;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Chamtsere.API.Controllers.UserControlller;
 
 public partial class UserController
 {
-    [HttpPost("create")]
-    [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> Create([FromBody] CreateUserCommand command, CancellationToken cancellationToken)
+    [HttpPost]
+    public async Task<IActionResult> Login([FromBody] LoginCommand command, CancellationToken cancellationToken)
+
     {
         var result = await mediator.Send(command, cancellationToken);
         return Ok(result);

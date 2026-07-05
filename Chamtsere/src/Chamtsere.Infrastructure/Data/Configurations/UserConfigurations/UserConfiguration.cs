@@ -1,12 +1,12 @@
-﻿using Chamtsere.Domain.Entities.User.Common;
+﻿using Chamtsere.Domain.Entities.User;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Chamtsere.Infrastructure.Data.Configurations.User;
+namespace Chamtsere.Infrastructure.Data.Configurations.UserConfigurations;
 
-public class UserConfiguration : IEntityTypeConfiguration<CommonUser>
+public class UserConfiguration : IEntityTypeConfiguration<User>
 {
-    public void Configure(EntityTypeBuilder<CommonUser> builder)
+    public void Configure(EntityTypeBuilder<User> builder)
     {
         builder.HasKey(b => b.Id);
 
@@ -17,7 +17,6 @@ public class UserConfiguration : IEntityTypeConfiguration<CommonUser>
             .IsRequired()
             .HasMaxLength(100);
         builder.Property(b => b.Phone)
-            .IsRequired()
             .HasMaxLength(20);
         builder.Property(b => b.FirstName)
             .HasMaxLength(50);
@@ -25,5 +24,8 @@ public class UserConfiguration : IEntityTypeConfiguration<CommonUser>
             .HasMaxLength(50);
         builder.Property(b => b.ExternalAuthId)
             .HasMaxLength(100);
+
+        builder.HasIndex(b => b.ExternalAuthId)
+            .IsUnique(false);
     }
 }

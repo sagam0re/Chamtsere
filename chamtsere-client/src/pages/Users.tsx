@@ -50,7 +50,7 @@ export default function Users() {
     try {
       setLoadingUsers(true)
       const token = await getAccessTokenSilently()
-      const response = await fetch('/api/user/get-all', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/list`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

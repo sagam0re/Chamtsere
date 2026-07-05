@@ -3,6 +3,6 @@
 namespace Chamtsere.API.Controllers.UserControlller;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("API/[controller]/[action]")]
 [Produces("application/json")]
 public partial class UserController(IMediator mediator) : ControllerBase;
