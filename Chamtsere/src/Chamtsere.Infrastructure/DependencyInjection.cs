@@ -25,6 +25,5 @@ public static class DependencyInjection
         });
 
         builder.Services.AddScoped<IChamtsereDbContext>(provider => provider.GetRequiredService<ChamtsereDbContext>());
-        //builder.Services.AddScoped<ITokenService, TokenService>();
     }
 }
